@@ -18,4 +18,4 @@
 	<button>Login</button>
 	<button formaction="?/register">Register</button>
 </form>
-<p style="color: red">{form?.message ?? ''}</p>
+<p class="text-red-400">{form?.message ?? ''}</p>
