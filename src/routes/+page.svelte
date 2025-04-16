@@ -5,6 +5,10 @@
   let { data }: { data: PageServerData } = $props();
 </script>
 
+<svelte:head>
+  <title>Home - happyjudge</title>
+</svelte:head>
+
 <h1>Hi, {data.user.username}!</h1>
 <p>Your user ID is {data.user.id}.</p>
 <form method="post" action="?/logout" use:enhance>

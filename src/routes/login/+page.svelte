@@ -5,6 +5,10 @@
   let { form }: { form: ActionData } = $props();
 </script>
 
+<svelte:head>
+  <title>Login - happyjudge</title>
+</svelte:head>
+
 <h1 class="my-1 text-2xl font-bold">Login/Register</h1>
 <form class="mt-2 space-y-4" method="post" action="?/login" use:enhance>
   <label>
