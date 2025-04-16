@@ -6,6 +6,7 @@
 </script>
 
 <h1>Login/Register</h1>
+<p>If you don't have an account yet, filling this form and clicking on Register will create one for you.</p>
 <form method="post" action="?/login" use:enhance>
   <label>
     Username
