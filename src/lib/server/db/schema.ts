@@ -37,7 +37,7 @@ export const problem = pgTable('problem', {
 
 export const testcase = pgTable('testcase', {
   id: serial('id').primaryKey(),
-  problemId: integer('problem_id')
+  problemId: text('problem_id')
     .notNull()
     .references(() => problem.id),
   input: text('input').notNull(),
