@@ -34,7 +34,7 @@
   >
   <span class="block w-96 text-center">or</span>
   <button
-    class="my-4 flex w-96 cursor-pointer justify-center rounded-md bg-sky-400 px-3 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300"
+    class="my-4 flex w-96 cursor-pointer justify-center rounded-md bg-sky-500 px-3 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
     formaction="?/register">Register new account</button
   >
 </form>

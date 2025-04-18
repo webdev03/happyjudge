@@ -25,8 +25,8 @@ export const problem = pgTable('problem', {
   statement: text('statement').notNull(),
   difficulty: difficultyEnum('difficulty').notNull(),
   timeLimit: integer('time_limit').notNull(), // in milliseconds
-  memoryLimit: integer('memory_limit').notNull(), // in kilobytes
-  sampleTestcases: jsonb('sample_testcases').$type<{ input: string; output: string }[]>(),
+  memoryLimit: integer('memory_limit').notNull(), // in megabytes
+  sampleTestcases: jsonb('sample_testcases').notNull().$type<{ input: string; output: string }[]>(),
   authorId: text('author_id')
     .notNull()
     .references(() => user.id),
