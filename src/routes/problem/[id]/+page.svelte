@@ -1,5 +1,6 @@
 <script lang="ts">
   import Difficulty from '$lib/components/Difficulty.svelte';
+  import { parseMarkdown } from '$lib/markdown';
 
   let { data } = $props();
 </script>
@@ -13,7 +14,7 @@
   <p>Memory limit: {data.problem.memoryLimit}mb</p>
 </div>
 <div class="my-2 h-[2px] w-full rounded-full bg-gray-700"></div>
-<div>{@html data.problem.statement}</div>
+<div>{@html parseMarkdown(data.problem.statement)}</div>
 <div class="my-2 h-[2px] w-full rounded-full bg-gray-700"></div>
 {#if data.problem.sampleTestcases.length > 0}
   <h2 class="my-2 text-2xl font-semibold">Sample Testcases</h2>
