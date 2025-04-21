@@ -3,7 +3,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { languages } from '$lib/codefort.server';
+import { languages } from '$lib/server/codefort';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
   const { id } = params;
