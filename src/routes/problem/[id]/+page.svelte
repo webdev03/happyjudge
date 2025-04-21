@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { enhance } from '$app/forms';
+
   import Difficulty from '$lib/components/Difficulty.svelte';
   import CodeMirror from '$lib/components/CodeMirror.svelte';
   import { parseMarkdown } from '$lib/markdown';
@@ -23,33 +25,34 @@
   <h2 class="my-2 text-2xl font-semibold">Sample Testcases</h2>
   {#each data.problem.sampleTestcases as sampleTestcase, i}
     <h2 class="mt-2 text-xl font-semibold">Sample #{i + 1}</h2>
-    <div class="flex">
-      <div class="flex w-[50%] flex-col p-1">
+    <div class="flex space-x-2">
+      <div class="flex w-[50%] flex-col">
         <h4 class="my-1 text-lg">Input:</h4>
-        <CodeMirror value={sampleTestcase.input} readOnly={true} />
+        <div class="border"><CodeMirror value={sampleTestcase.input} basicEditSetup={false} readOnly={true} /></div>
       </div>
-      <div class="flex w-[50%] flex-col p-1">
+      <div class="flex w-[50%] flex-col">
         <h4 class="my-1 text-lg">Output:</h4>
-        <CodeMirror value={sampleTestcase.output} readOnly={true} />
+        <div class="border"><CodeMirror value={sampleTestcase.output} basicEditSetup={false} readOnly={true} /></div>
       </div>
     </div>
   {/each}
 {/if}
 <div class="my-2 h-[2px] w-full rounded-full bg-gray-700"></div>
-<h2 class="my-2 text-2xl font-semibold">Submit</h2>
-<!-- TODO: INTEGRATE WITH CODEFORT
-
-<label for="lang">Choose a language:</label>
-<br />
-<select name="lang" id="lang" class="mb-3">
-  <option value="java">JavaScript (v8 10.1)</option>
-  <option value="saab">C++ 17 (gcc 15)</option>
-  <option value="mercedes">Bash</option>
-</select>
- -->
-<p>Enter code here:</p>
-<CodeMirror bind:value={code} />
-<button
-  class="my-4 flex w-72 cursor-pointer justify-center rounded-md bg-sky-500 px-3 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-  >Submit</button
->
+<form method="POST" action="?/submit">
+  <h2 class="my-2 text-2xl font-semibold">Submit</h2>
+  <label for="lang">Choose a language:</label>
+  <br />
+  <select name="lang" id="lang" class="mb-3">
+    {#each data.languages as language}
+      <option value={language.id}>{language.name}</option>
+    {/each}
+  </select>
+  <p>Enter code here:</p>
+  <CodeMirror bind:value={code} />
+  <!-- for the form submission -->
+  <textarea id="code" name="code" bind:value={code} class="hidden"></textarea>
+  <button
+    class="my-4 flex w-72 cursor-pointer justify-center rounded-md bg-sky-500 px-3 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+    >Submit</button
+  >
+</form>
