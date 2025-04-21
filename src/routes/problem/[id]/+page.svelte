@@ -10,6 +10,10 @@
   let code = $state('');
 </script>
 
+<svelte:head>
+  <title>{data.problem.title} - happyjudge</title>
+</svelte:head>
+
 <div class="flex items-center space-x-8">
   <h1 class="text-3xl font-semibold">{data.problem.title}</h1>
   <Difficulty difficulty={data.problem.difficulty} />
