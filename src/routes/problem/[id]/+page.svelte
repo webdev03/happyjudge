@@ -19,7 +19,7 @@
   <p>Memory limit: {data.problem.memoryLimit}mb</p>
 </div>
 <div class="my-2 h-[2px] w-full rounded-full bg-gray-700"></div>
-<div>{@html parseMarkdown(data.problem.statement)}</div>
+<article class="prose max-w-none">{@html parseMarkdown(data.problem.statement)}</article>
 <div class="my-2 h-[2px] w-full rounded-full bg-gray-700"></div>
 {#if data.problem.sampleTestcases.length > 0}
   <h2 class="my-2 text-2xl font-semibold">Sample Testcases</h2>
