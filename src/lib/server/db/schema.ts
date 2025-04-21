@@ -39,25 +39,47 @@ export const testcase = pgTable('testcase', {
   id: serial('id').primaryKey(),
   problemId: text('problem_id')
     .notNull()
-    .references(() => problem.id),
+    .references(() => problem.id, {
+      onDelete: 'cascade',
+    }),
   input: text('input').notNull(),
   output: text('output').notNull(),
   isHidden: boolean('is_hidden').default(true).notNull(),
   weight: integer('weight').default(1).notNull(), // partial scoring
 });
 
-export const verdictEnum = pgEnum('verdict', [
-  'accepted',
-  'wrong_answer',
-  'time_limit_exceeded',
-  'memory_limit_exceeded',
-  'runtime_error',
-  'compilation_error',
-  'waiting',
-  'processing',
-]);
+export type Verdict =
+  | 'accepted'
+  | 'wrong_answer'
+  | 'time_limit_exceeded'
+  | 'memory_limit_exceeded'
+  | 'runtime_error'
+  | 'compilation_error'
+  | 'waiting'
+  | 'processing';
 
-// TODO: Submission
+export type Result = {
+  id: number;
+  output: string;
+  timeTaken: string; // in milliseconds
+  memoryUsed: number; // in megabytes
+  verdict: Verdict;
+  score: number;
+};
+
+export const submission = pgTable('submission', {
+  id: serial('id').primaryKey(),
+  problemId: text('problem_id')
+    .notNull()
+    .references(() => problem.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id),
+  code: text('code').notNull(),
+  language: text('language').notNull(),
+  submittedAt: timestamp('submitted_at').defaultNow(),
+  results: jsonb('results').$type<Result[]>().notNull().default([]), // type checks done in typescript, not postgres
+});
 
 // TODO: Group
 
@@ -73,4 +95,4 @@ export type Problem = typeof problem.$inferSelect;
 
 export type Testcase = typeof testcase.$inferSelect;
 
-export type VerdictEnum = typeof verdictEnum.enumValues;
+export type Submission = typeof submission.$inferSelect;
