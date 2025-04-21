@@ -9,8 +9,5 @@
   <title>Home - happyjudge</title>
 </svelte:head>
 
-<h1>Hi, {data.user.username}!</h1>
-<p>Your user ID is {data.user.id}.</p>
-<form method="post" action="?/logout" use:enhance>
-  <button>Sign out</button>
-</form>
+<h1 class="text-2xl">Hi, {data.user.username}!</h1>
+<p>TODO: actual stuff</p>
