@@ -7,7 +7,7 @@ import * as table from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-  if (event.locals.user) {
+  if (event.locals.auth.user) {
     return redirect(302, '/');
   }
   return {};

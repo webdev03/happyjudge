@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import { pgTable, pgEnum, text, timestamp, integer, serial, jsonb, boolean } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
@@ -5,6 +6,10 @@ export const user = pgTable('user', {
   username: text('username').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
 });
+
+export const userRelations = relations(user, ({ many }) => ({
+  submission: many(submission),
+}));
 
 export const session = pgTable('session', {
   id: text('id').primaryKey(),
@@ -35,6 +40,10 @@ export const problem = pgTable('problem', {
   tags: jsonb('tags').$type<string[]>().notNull(),
 });
 
+export const problemRelations = relations(problem, ({ many }) => ({
+  submission: many(submission),
+}));
+
 export const testcase = pgTable('testcase', {
   id: serial('id').primaryKey(),
   problemId: text('problem_id')
@@ -54,14 +63,12 @@ export type Verdict =
   | 'time_limit_exceeded'
   | 'memory_limit_exceeded'
   | 'runtime_error'
-  | 'compilation_error'
-  | 'waiting'
-  | 'processing';
+  | 'compilation_error';
 
 export type Result = {
   id: number;
   output: string;
-  timeTaken: string; // in milliseconds
+  timeTaken: number; // in milliseconds
   memoryUsed: number; // in megabytes
   verdict: Verdict;
   score: number;
@@ -80,6 +87,17 @@ export const submission = pgTable('submission', {
   submittedAt: timestamp('submitted_at').defaultNow(),
   results: jsonb('results').$type<Result[]>().notNull().default([]), // type checks done in typescript, not postgres
 });
+
+export const submissionRelations = relations(submission, ({ one }) => ({
+  user: one(user, {
+    fields: [submission.userId],
+    references: [user.id],
+  }),
+  problem: one(problem, {
+    fields: [submission.problemId],
+    references: [problem.id],
+  }),
+}));
 
 // TODO: Group
 

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
-
   import Difficulty from '$lib/components/Difficulty.svelte';
   import CodeMirror from '$lib/components/CodeMirror.svelte';
   import { parseMarkdown } from '$lib/markdown';
