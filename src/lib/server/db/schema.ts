@@ -54,6 +54,7 @@ export const testcase = pgTable('testcase', {
   input: text('input').notNull(),
   output: text('output').notNull(),
   isHidden: boolean('is_hidden').default(true).notNull(),
+  caseGroup: text('testcase_group').default('Misc').notNull(),
   weight: integer('weight').default(1).notNull(), // partial scoring
 });
 
@@ -67,6 +68,7 @@ export type Verdict =
 
 export type Result = {
   id: number;
+  caseGroup: string;
   output: string;
   timeTaken: number; // in milliseconds
   memoryUsed: number; // in megabytes
@@ -84,7 +86,7 @@ export const submission = pgTable('submission', {
     .references(() => user.id),
   code: text('code').notNull(),
   language: text('language').notNull(),
-  submittedAt: timestamp('submitted_at').defaultNow(),
+  submittedAt: timestamp('submitted_at').defaultNow().notNull(),
   results: jsonb('results').$type<Result[]>().notNull().default([]), // type checks done in typescript, not postgres
 });
 

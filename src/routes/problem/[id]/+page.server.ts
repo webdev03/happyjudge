@@ -27,8 +27,14 @@ export const actions = {
 
     const data = await request.formData();
 
-    const language = data.get('lang')?.toString();
-    const code = data.get('code')?.toString();
+    const language = data
+      .get('lang')
+      ?.toString()
+      .replace(/\r\n|\r/g, '\n');
+    const code = data
+      .get('code')
+      ?.toString()
+      .replace(/\r\n|\r/g, '\n');
 
     if (!language || !languages.find((x) => x.id === language)) error(400, 'Invalid language');
     if (!code) error(400, 'No code provided');

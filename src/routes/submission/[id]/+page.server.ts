@@ -4,6 +4,8 @@ import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { assertUserExists } from '$lib/server/assertion';
+import { verdictToHumanName } from '$lib/utils';
+import { languages } from '$lib/server/codefort';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
   assertUserExists(locals.auth);
@@ -20,5 +22,29 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   if (!submission) error(404, 'Not found');
   if (submission.userId !== locals.auth.user.id) error(404, 'Not found');
 
-  return { submission };
+  return {
+    submission: {
+      id: submission.id,
+      problemId: submission.problemId,
+      userId: submission.userId,
+      code: submission.code,
+      language: languages.find((x) => x.id === submission.language)?.name || submission.language, // in case a language was removed
+      submittedAt: submission.submittedAt,
+      results: await Promise.all(
+        submission.results.map(async (x) => ({
+          caseGroup: x.caseGroup,
+          id: x.id,
+          memoryUsed: x.memoryUsed,
+          score: x.score,
+          timeTaken: x.timeTaken,
+          verdict: verdictToHumanName(x.verdict),
+          // NO OUTPUT GIVEN (IF HIDDEN) AT ALL COSTS!! (maybe not _all_)
+          output: !!(await db.query.testcase.findFirst({ where: eq(table.testcase.id, x.id) }))?.isHidden
+            ? null
+            : x.output,
+        })),
+      ),
+      problem: submission.problem,
+    },
+  };
 };

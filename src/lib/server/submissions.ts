@@ -9,62 +9,63 @@ const queue = new PQueue({
   autoStart: true,
 });
 
-async function executeTestcases(language: string, code: string, problem: table.Problem) {
+async function executeTestcases(submission: table.Submission, problem: table.Problem) {
   const testcases = await db.query.testcase.findMany({
     where: eq(table.testcase.problemId, problem.id),
   });
   let results: table.Result[] = [];
+  queue.start();
   await queue.addAll(
     testcases.map((testcase) => async () => {
       const result = await execute(
-        language,
-        code,
+        submission.language,
+        submission.code,
         testcase.input,
         4000, // reasonable compile time limit?
         problem.memoryLimit,
         problem.timeLimit,
         problem.memoryLimit,
       );
+
+      const outputMatches =
+        result.stdout
+          .split('\n')
+          .map((x) => x.trim())
+          .join('')
+          .trim() ===
+        testcase.output
+          .split('\n')
+          .map((x) => x.trim())
+          .join('')
+          .trim();
+
       results.push({
         id: testcase.id,
+        caseGroup: testcase.caseGroup,
         memoryUsed: 0, // TODO
         output: result.stdout,
         timeTaken: result.stats.run.realTime,
         // TODO: fix this
-        verdict:
-          result.stdout
-            .split('\n')
-            .map((x) => x.trim())
-            .join('')
-            .trim() ===
-          testcase.output
-            .split('\n')
-            .map((x) => x.trim())
-            .join('')
-            .trim()
-            ? 'accepted'
-            : result.exitCode !== 0
-              ? 'runtime_error'
-              : result.stats.run.realTime >= problem.timeLimit
-                ? 'time_limit_exceeded'
-                : 'wrong_answer',
+        verdict: outputMatches
+          ? 'accepted'
+          : result.exitCode !== 0
+            ? 'runtime_error'
+            : result.stats.run.realTime >= problem.timeLimit
+              ? 'time_limit_exceeded'
+              : 'wrong_answer',
         // TODO: also fix this
-        score:
-          result.stdout
-            .split('\n')
-            .map((x) => x.trim())
-            .join('')
-            .trim() ===
-          testcase.output
-            .split('\n')
-            .map((x) => x.trim())
-            .join('')
-            .trim()
-            ? testcase.weight
-            : 0,
+        score: outputMatches ? testcase.weight : 0,
       });
+
+      // TODO: socket.io broadcast
     }),
   );
+  await db
+    .update(table.submission)
+    .set({
+      results,
+    })
+    .where(eq(table.submission.id, submission.id));
 }
 
 export default async function createSubmission(language: string, code: string, problemId: string, userId: string) {
@@ -85,7 +86,7 @@ export default async function createSubmission(language: string, code: string, p
       .returning()
   )[0];
 
-  executeTestcases(language, code, problem);
+  executeTestcases(submission, problem);
 
   return submission;
 }
