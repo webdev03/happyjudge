@@ -1,12 +1,21 @@
 import * as auth from '$lib/server/auth';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import { db } from '$lib/server/db';
+import * as table from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.auth.user) {
     return redirect(302, '/login');
   }
-  return { user: locals.auth.user };
+
+  const problems = await db.query.problem.findMany({
+    where: eq(table.problem.homepage, true),
+    limit: 80, // only 80 at once
+  });
+
+  return { user: locals.auth.user, problems };
 };
 
 export const actions: Actions = {
