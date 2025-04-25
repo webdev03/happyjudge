@@ -38,6 +38,8 @@ export const problem = pgTable('problem', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   // TODO: One to many access (first TODO groups)
   tags: jsonb('tags').$type<string[]>().notNull(),
+  homepage: boolean('homepage').default(false).notNull(), // whether to show on homepage,
+  displayGroup: text('display_group'), // if the problem should be shown in a collapsible group in the UI
 });
 
 export const problemRelations = relations(problem, ({ many }) => ({

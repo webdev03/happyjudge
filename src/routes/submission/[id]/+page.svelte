@@ -53,11 +53,7 @@
     </tbody>
     <tbody class="border-b-8 border-white">
       {#each group.results as caseResult, j}
-        <tr
-          class={'border-b border-gray-200 bg-white hover:bg-gray-50 ' + caseResult.verdict === 'Accepted'
-            ? 'bg-green-400'
-            : 'bg-red-400'}
-        >
+        <tr class={'border-b border-gray-200 ' + (caseResult.verdict === 'Accepted' ? 'bg-green-400' : 'bg-red-400')}>
           <th></th>
           <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-gray-900">
             Case {group.groupId}.{j + 1}
