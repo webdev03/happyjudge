@@ -1,0 +1,38 @@
+FROM oven/bun:1 as builder
+
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json bun.lockb* ./
+RUN bun install --frozen-lockfile
+
+# Copy the rest of the application
+COPY . .
+
+# Create the .env file needed for the build
+RUN echo "CODEFORT_URL=\"http://127.0.0.1:3000\"" > .env
+RUN echo "DATABASE_URL=\"postgres://happyjudge:happyjudge@postgres:5432/happyjudge\"" >> .env
+
+# Make sure SvelteKit processes the environment variables
+RUN bun run prepare
+
+# Build the application
+RUN bun run build
+
+FROM oven/bun:1-slim as runner
+
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Expose the port
+EXPOSE 3001
+
+# Run the application
+CMD ["bun", "./build"]
