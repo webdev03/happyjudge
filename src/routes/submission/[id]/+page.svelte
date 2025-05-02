@@ -58,7 +58,7 @@
           <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-gray-900">
             Case {group.groupId}.{j + 1}
           </th>
-          <td class="px-6 py-4"> {caseResult.timeTaken / 1000} seconds </td>
+          <td class="px-6 py-4"> {(caseResult.timeTaken / 1000).toFixed(3)} seconds </td>
           <!-- <td class="px-6 py-4"> Laptop </td> -->
           <td class="px-6 py-4"> {caseResult.verdict} </td>
           <td class="px-6 py-4"> {caseResult.verdict === 'Accepted' && group.passed ? caseResult.score : 0} </td>
