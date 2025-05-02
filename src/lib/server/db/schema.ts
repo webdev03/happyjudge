@@ -5,6 +5,8 @@ export const user = pgTable('user', {
   id: text('id').primaryKey(),
   username: text('username').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
+  canCreate: boolean('can_create').default(false).notNull(),
+  canAdmin: boolean('can_admin').default(false).notNull(),
 });
 
 export const userRelations = relations(user, ({ many }) => ({
