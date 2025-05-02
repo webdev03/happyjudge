@@ -25,7 +25,8 @@
             <p class="my-1">Tags:</p>
             <div class="flex">
               {#each problem.tags as tag}
-                <span class="flex h-8 min-w-12 items-center justify-center rounded-full bg-blue-400 p-3 text-center"
+                <span
+                  class="mr-1 flex h-8 min-w-12 items-center justify-center rounded-full bg-blue-400 p-3 text-center"
                   >{tag}</span
                 >
               {/each}
