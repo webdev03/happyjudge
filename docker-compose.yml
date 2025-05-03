@@ -1,0 +1,36 @@
+services:
+  happyjudge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - CODEFORT_URL=http://codefort:3000
+      - DATABASE_URL=postgres://happyjudge:happyjudge@postgres:5432/happyjudge
+    depends_on:
+      - postgres
+    restart: unless-stopped
+#    volumes:
+#      - ./.env:/app/.env:ro
+    networks:
+      - judge-network
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=happyjudge
+      - POSTGRES_PASSWORD=happyjudge
+      - POSTGRES_DB=happyjudge
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data:rw
+    restart: unless-stopped
+    networks:
+      - judge-network
+
+networks:
+  judge-network:
+    name: judge-network
+    external: true
